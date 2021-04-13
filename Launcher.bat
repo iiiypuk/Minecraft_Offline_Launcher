@@ -48,7 +48,7 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.1
+set VERSION=1.2
 
 call:install
 call:update
@@ -1195,12 +1195,14 @@ goto:EOF
 :update
 Ping www.google.nl -n 1 -w 1000 >nul
 if errorlevel 1 (set in=0) else (set in=1)
-if in==0 goto:EOF
+if %in%==0 goto:EOF
 if exist "%appdata%\kotsasmin\launcher\version.txt" del "%appdata%\kotsasmin\launcher\version.txt"
 curl.exe -o "%appdata%\kotsasmin\launcher\version.txt" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/version.txt" -L -s
 set /p new_version=<"%appdata%\kotsasmin\launcher\version.txt"
 if %VERSION%==%new_version% goto:EOF
 curl.exe -o "Launcher %new_version%.bat" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/Launcher.bat" -L -s
-start "Launcher %new_version%.bat
-(goto) 2>nul & del "%~f0"
-exit
+start "" "Launcher %new_version%.bat"
+REM (goto) 2>nul & del "%~f0"
+SET mypath=%~dp0
+cd %mypath:~0,-1%
+del "%~nx0%"
