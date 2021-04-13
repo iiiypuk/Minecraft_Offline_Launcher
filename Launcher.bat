@@ -1,6 +1,7 @@
 @ECHO OFF
 title Kotsasmin Minecraft Launcher
 color f
+
 ENDLOCAL
 
 SET "AUTH_DP0=%~dp0"
@@ -11,11 +12,9 @@ PUSHD "%AUTH_DP0%"
 
 
 
-
 set DISCORD_SHORT=https://discord.gg/KHvjMcKkEX
 
 SETLOCAL EnableExtensions EnableDelayedExpansion
-
 
 
 
@@ -47,9 +46,9 @@ SET MODS_SERVER=files.minecraftforge.net
 SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 
-SET LF=^
-SET VERSION=1.0
+REM SET LF=^
 
+set VERSION=1.1
 
 call:install
 call:update
@@ -1090,7 +1089,7 @@ EXIT
 :REGFIX_CHECK
 SET "FIX="
 
-SET "TEXT=Download my latest Windows Context Menu Tweak!LF!       (this opens the default assigned Web browser)"
+SET "TEXT=Download my latest Windows Context Menu Tweak!^!       (this opens the default assigned Web browser)"
 
 2>NUL REG QUERY HKEY_CLASSES_ROOT\cmdfile\shell\runas\command /ve | >NUL 2>&1 FINDSTR /IC:"/C \"\"%%1\"\" %%*"
 
@@ -1196,7 +1195,7 @@ goto:EOF
 :update
 Ping www.google.nl -n 1 -w 1000 >nul
 if errorlevel 1 (set in=0) else (set in=1)
-if in=0 goto:EOF
+if in==0 goto:EOF
 if exist "%appdata%\kotsasmin\launcher\version.txt" del "%appdata%\kotsasmin\launcher\version.txt"
 curl.exe -o "%appdata%\kotsasmin\launcher\version.txt" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/version.txt" -L -s
 set /p new_version=<"%appdata%\kotsasmin\launcher\version.txt"
