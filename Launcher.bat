@@ -1,7 +1,6 @@
 @ECHO OFF
 title Kotsasmin Minecraft Launcher
 color f
-echo Loading...
 ENDLOCAL
 
 SET "AUTH_DP0=%~dp0"
@@ -49,14 +48,11 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 
 SET LF=^
+SET VERSION=1.0
 
 
-if not exist %appdata%\kotsasmin\launcher mkdir %appdata%\kotsasmin\launcher
-if not exist %JQ% curl.exe -o %JQ% "https://github.com/Kotsasmin/Offline_Minecraft_Launcher/blob/main/jq.exe?raw=true" -L -s
-
-
-if not exist %appdata%\.minecraft\Minecraft.exe curl.exe -o %appdata%\.minecraft\Minecraft.exe "https://launcher.mojang.com/download/Minecraft.exe" -L -s
-
+call:install
+call:update
 
 
 >NUL 2>&1 REG QUERY "HKEY_USERS\S-1-5-19" && SET "ADMIN= "
@@ -319,6 +315,8 @@ IF DEFINED DISPLAYNAME (SET "DISPLAYNAME='%DISPLAYNAME%'") ELSE (SET "DISPLAYNAM
 
 SET "TRIMMED_APPDATA=!USER_APPDATA!"
 SET "TEMP_APPDATA=!USER_APPDATA:~52!"
+IF "!AUTH_USERNAME!"=="" SET "AUTH_USERNAME=!USERNAME!"
+
 
 IF DEFINED TEMP_APPDATA SET "TRIMMED_APPDATA=!USER_APPDATA:~,51!~"
 
@@ -327,6 +325,8 @@ echo.
 ECHO  !TEXT!!TEXT_EXTRA!
 echo.
 echo.
+ECHO     Active Windows User: '!AUTH_USERNAME:~,20!'
+ECHO.
 ECHO               User Type: %ACCOUNT_STATE%
 ECHO          AppData Folder: '%appdata%'
 echo.
@@ -928,6 +928,8 @@ goto :EOF
 
 
 :CHOOSER
+
+
 SET "IGNORE= "
 SET "OPTION="
 
@@ -939,19 +941,13 @@ CALL :HEADER
 
 echo.
 echo.
-ECHO                       WELCOME TO THE AUTH (UN)BLOCKER MENU
+ECHO                       WELCOME TO KOTSASMIN'S MINECRAFT LAUNCHER MENU
 echo.
 echo.
-
-IF "!AUTH_USERNAME!"=="" SET "AUTH_USERNAME=!USERNAME!"
-
-ECHO   Active Windows User: '!AUTH_USERNAME:~,20!'
 echo.
-
 ECHO  [1] = View HOSTS and User Information
-
+echo.
 SET "TEXT=[2]"
-
 IF "!HOSTS_STATE!"=="GOOD" (
 
   SET BLOCK_STATE_PREFIX=Unb
@@ -965,18 +961,17 @@ IF "!HOSTS_STATE!"=="GOOD" (
   ECHO  !TEXT! = Repair HOSTS file related problems
 
 )
-
-
-
-
 CALL :REGFIX_CHECK
-echo  [3] = Add an offline Minecraft account
-echo  [4] = Launch Minecraft Launcher
-ECHO  [5] = Exit 'Auth (un)blocker'
 echo.
-
+echo  [3] = Add an offline Minecraft account
+echo.
+echo  [4] = Launch Minecraft Launcher
+echo.
+echo  [5] = Update
+echo.
+ECHO  [6] = Exit
+echo.
 IF DEFINED FIX echo.
-
 echo.
 
 SET /P OPTION=Your choice: 
@@ -991,7 +986,8 @@ IF "!OPTION!"=="2" (
 
 IF "!OPTION!"=="3" goto add_account
 IF "!OPTION!"=="4" goto mc_launch
-IF "!OPTION!"=="5" EXIT
+IF "!OPTION!"=="5" goto update
+IF "!OPTION!"=="6" EXIT
 
 goto CHOOSER
 
@@ -1006,7 +1002,7 @@ FOR %%A IN ("!ACCOUNTS!") DO IF "%%~zA"=="0" ECHO {}>"!ACCOUNTS!" 2>NUL
 DEL /F /Q "!ACCOUNTS!">NUL 2>&1
 REN "!ACCOUNTS:~,-5!" "launcher_accounts.json">NUL 2>&1
 cls
-echo Account added successfully ^!
+echo Account added successfully !!^!
 echo.
 echo.
 echo.
@@ -1016,14 +1012,15 @@ GOTO CHOOSER
 :mc_launch
 cls
 echo Launching Minecraft...
-if exist %appdata%\.minecraft\Minecraft.exe start %appdata%\.minecraft\Minecraft.exe & exit
+set "mc_file=%appdata%\.minecraft\Minecraft.exe"
+if exist "%appdata%\.minecraft\Minecraft.exe" start "" "%mc_file%" & exit
 call:mc_download
 timeout 1 /nobreak >nul
 goto mc_launch
 
 
 :mc_download
-curl.exe -o %appdata%\.minecraft\Minecraft.exe "https://launcher.mojang.com/download/Minecraft.exe" -L -s
+curl.exe -o "%appdata%\.minecraft\Minecraft.exe" "https://launcher.mojang.com/download/Minecraft.exe" -L -s
 goto:EOF
 
 
@@ -1172,3 +1169,39 @@ echo.
 ECHO  !QUIT!
 PAUSE>NUL|SET /P =
 EXIT
+
+:install
+if not exist "%appdata%\kotsasmin\launcher" mkdir "%appdata%\kotsasmin\launcher"
+if not exist "%JQ%" curl.exe -o "%JQ%" "https://github.com/Kotsasmin/Offline_Minecraft_Launcher/blob/main/jq.exe?raw=true" -L -s
+if not exist "%appdata%\.minecraft\Minecraft.exe" curl.exe -o "%appdata%\.minecraft\Minecraft.exe" "https://launcher.mojang.com/download/Minecraft.exe" -L -s
+if not exist "%USERPROFILE%\Desktop\Minecraft.lnk" call:minecraft.lnk
+goto:EOF
+
+
+
+
+:minecraft.lnk
+set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
+
+echo Set oWS = WScript.CreateObject("WScript.Shell") >> %SCRIPT%
+echo sLinkFile = "%USERPROFILE%\Desktop\Minecraft.lnk" >> %SCRIPT%
+echo Set oLink = oWS.CreateShortcut(sLinkFile) >> %SCRIPT%
+echo oLink.TargetPath = "%appdata%\.minecraft\Minecraft.exe" >> %SCRIPT%
+echo oLink.Save >> %SCRIPT%
+
+cscript /nologo %SCRIPT%
+del %SCRIPT%
+goto:EOF
+
+:update
+Ping www.google.nl -n 1 -w 1000 >nul
+if errorlevel 1 (set in=0) else (set in=1)
+if in=0 goto:EOF
+if exist "%appdata%\kotsasmin\launcher\version.txt" del "%appdata%\kotsasmin\launcher\version.txt"
+curl.exe -o "%appdata%\kotsasmin\launcher\version.txt" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/version.txt" -L -s
+set /p new_version=<"%appdata%\kotsasmin\launcher\version.txt"
+if %VERSION%==%new_version% goto:EOF
+curl.exe -o "Launcher %new_version%.bat" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/Launcher.bat" -L -s
+start "Launcher %new_version%.bat
+(goto) 2>nul & del "%~f0"
+exit
