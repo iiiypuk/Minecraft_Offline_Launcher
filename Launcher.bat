@@ -48,7 +48,7 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.2
+set VERSION=1.3
 
 call:install
 call:update
@@ -115,11 +115,7 @@ CALL :BLOCKING_STRATEGY
 
 CALL :HEADER
 
-echo.
-echo.
-echo.
-echo.
-echo.
+
 
 DEL /A /F /Q HOSTS>NUL 2>&1
 
@@ -449,11 +445,7 @@ goto :EOF
 
 CALL :HEADER
 
-echo.
-echo.
-echo.
-echo.
-echo.
+
 ECHO  THE !OBJECT! COULD NOT BE FOUND
 echo.
 echo.
@@ -677,16 +669,15 @@ goto :EOF
 :WELCOME
 CALL :HEADER
 
-echo.
-echo.
-echo.
-echo.
-ECHO  WELCOME TO AUTH (UN)BLOCKER^^!
+
+ECHO  WELCOME TO KOTSASMIN'S MINECRAFT LAUNCHER^^!
 echo.
 echo.
 echo.
 ECHO  With this program you can (un)block the Minecraft Authentication server
 ECHO  This gives you the opportunity to play as "CRACKED" and LEGITIMATE user
+ECHO.
+ECHO  Also you will be able to create a "CRACKED" Minecraft account^^!
 echo.
 ECHO  When running the program with ADMIN privileges, it will SKIP the option menu
 ECHO  If you face any kind of issues, visit %DISCORD_SHORT% for support
@@ -769,11 +760,7 @@ IF DEFINED GAME_EXE (
 
 CALL :HEADER
 
-echo.
-echo.
-echo.
-echo.
-echo.
+
 ECHO  !PROCESS!^^!
 echo.
 echo.
@@ -817,11 +804,7 @@ IF DEFINED ADMIN (
 
 CALL :HEADER
 
-echo.
-echo.
-echo.
-echo.
-echo.
+
 
 IF EXIST HOSTS (
 
@@ -875,11 +858,7 @@ goto REQUEST_PRIVILEGES
 
 CALL :HEADER
 
-echo.
-echo.
-echo.
-echo.
-echo.
+
 ECHO  PROBLEMS RESOLVED
 echo.
 echo.
@@ -940,7 +919,7 @@ CALL :HEADER
 
 echo.
 echo.
-ECHO                       WELCOME TO KOTSASMIN'S MINECRAFT LAUNCHER MENU
+ECHO        WELCOME TO KOTSASMIN'S MINECRAFT LAUNCHER
 echo.
 echo.
 echo.
@@ -1170,16 +1149,17 @@ PAUSE>NUL|SET /P =
 EXIT
 
 :install
-if not exist "%appdata%\kotsasmin\launcher" mkdir "%appdata%\kotsasmin\launcher"
-if not exist "%JQ%" curl.exe -o "%JQ%" "https://github.com/Kotsasmin/Offline_Minecraft_Launcher/blob/main/jq.exe?raw=true" -L -s
-if not exist "%appdata%\.minecraft\Minecraft.exe" curl.exe -o "%appdata%\.minecraft\Minecraft.exe" "https://launcher.mojang.com/download/Minecraft.exe" -L -s
-if not exist "%USERPROFILE%\Desktop\Minecraft.lnk" call:minecraft.lnk
+if not exist "%appdata%\kotsasmin\launcher" mkdir "%appdata%\kotsasmin\launcher" & call:mc_sc
+if not exist "%JQ%" curl.exe -o "%JQ%" "https://github.com/Kotsasmin/Offline_Minecraft_Launcher/blob/main/jq.exe?raw=true" -L -s & call:mc_sc
+if not exist "%appdata%\.minecraft\Minecraft.exe" curl.exe -o "%appdata%\.minecraft\Minecraft.exe" "https://launcher.mojang.com/download/Minecraft.exe" -L -s & call:mc_sc
 goto:EOF
 
 
 
 
-:minecraft.lnk
+:mc_sc
+if exist "%USERPROFILE%\Desktop\Minecraft.lnk" goto:EOF
+
 set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
 
 echo Set oWS = WScript.CreateObject("WScript.Shell") >> %SCRIPT%
