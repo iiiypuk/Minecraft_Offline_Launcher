@@ -1,5 +1,4 @@
 @ECHO OFF
-title Kotsasmin Minecraft Launcher
 color f
 
 ENDLOCAL
@@ -19,7 +18,7 @@ SETLOCAL EnableExtensions EnableDelayedExpansion
 
 
 SET ANYKEY=(Press any key
-SET CONTINUE=!ANYKEY! continue)
+SET CONTINUE=!ANYKEY! to continue)
 SET RETURN=!ANYKEY! to return to menu)
 SET QUIT=!ANYKEY! to quit)
 
@@ -36,6 +35,8 @@ SET "PROFILES=%appdata%\.minecraft\launcher_profiles.json"
 SET "PROFILE_ENTRY=Added by kotsasmin's launcher | don't modify "
 SET UUID=00000000000000000000000000000000
 
+
+
 SET "SYSDIR=%SystemRoot%\System32"
 
 SET AUTH_SERVER=authserver.mojang.com
@@ -48,11 +49,13 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.3
+set VERSION=1.4
+title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
 call:install
-call:update
+::call:update
 
+timeout 0 /nobreak >nul
 
 >NUL 2>&1 REG QUERY "HKEY_USERS\S-1-5-19" && SET "ADMIN= "
 
@@ -315,6 +318,8 @@ IF "!AUTH_USERNAME!"=="" SET "AUTH_USERNAME=!USERNAME!"
 
 IF DEFINED TEMP_APPDATA SET "TRIMMED_APPDATA=!USER_APPDATA:~,51!~"
 
+call:CHECK_UPDATE
+timeout 1 /nobreak >nul
 echo.
 echo.
 ECHO  !TEXT!!TEXT_EXTRA!
@@ -325,11 +330,17 @@ ECHO.
 ECHO               User Type: %ACCOUNT_STATE%
 ECHO          AppData Folder: '%appdata%'
 echo.
+if %in%==1 echo     Internet connection: Connected
+if %in%==0 echo     Internet connection: Disconnected
+ECHO.
 ECHO             Player Name: %DISPLAYNAME%
 ECHO             Player UUID: !UUID!
 echo.
 ECHO       Auth server State: %BLOCK_STATE%!MSG!
 ECHO       Official accounts: !LEGITIMATE_ACCOUNTS!
+echo.
+echo             Launcher version: %VERSION%
+ECHO                Update status: %UPDATE_STATUS%
 echo.
 echo.
 echo.
@@ -919,11 +930,11 @@ CALL :HEADER
 
 echo.
 echo.
-ECHO        WELCOME TO KOTSASMIN'S MINECRAFT LAUNCHER
+ECHO        WELCOME TO MINECRAFT LAUNCHER BY KOTSASMIN
 echo.
 echo.
 echo.
-ECHO  [1] = View HOSTS and User Information
+ECHO  [1] = View HOSTS, Launcher and User Information
 echo.
 SET "TEXT=[2]"
 IF "!HOSTS_STATE!"=="GOOD" (
@@ -951,7 +962,7 @@ ECHO  [6] = Exit
 echo.
 IF DEFINED FIX echo.
 echo.
-
+ECHO.
 SET /P OPTION=Your choice: 
 
 IF "!OPTION!"=="1" goto STATUS
@@ -976,15 +987,23 @@ cls
 echo Adding account...
 IF NOT EXIST "!ACCOUNTS!" CD.>"!ACCOUNTS!" 2>NUL
 FOR %%A IN ("!ACCOUNTS!") DO IF "%%~zA"=="0" ECHO {}>"!ACCOUNTS!" 2>NUL
-%JQ% -r ".accounts+={\"!name!\":{\"accessToken\":\"\",\"localId\":\"!name!\",\"minecraftProfile\":{\"id\":\"!UUID!\",\"name\":\"!name!\"},\"type\":\"Mojang\",\"username\":\"!PROFILE_ENTRY!\"}}" "!ACCOUNTS!">"!ACCOUNTS:~,-5!" 2>NUL
+%JQ% -r ".accounts+={\"!name!\":{\"accessToken\":\"\",\"localId\":\"!name!\",\"minecraftProfile\":{\"id\":\"!UUID!\",\"name\":\"!name!\"},\"type\":\"Mojang\",\"username\":\"!PROFILE_ENTRY!\"}}" "!ACCOUNTS!">"!ACCOUNTS:~,-5!" 2>nul
 DEL /F /Q "!ACCOUNTS!">NUL 2>&1
 REN "!ACCOUNTS:~,-5!" "launcher_accounts.json">NUL 2>&1
+if not exist !ACCOUNTS! GOTO ACCOUNT_ERROR
+(
+SET /p FIRST=
+)<"%ACCOUNTS%"
+IF "%FIRST%"=="" GOTO ACCOUNT_ERROR
+timeout 1 /nobreak >nul
 cls
-echo Account added successfully !!^!
+echo  Account added successfully: %name%
 echo.
 echo.
 echo.
-pause
+echo.
+ECHO  !Return!
+PAUSE>NUL|SET /P =
 GOTO CHOOSER
 
 :mc_launch
@@ -1180,9 +1199,38 @@ if exist "%appdata%\kotsasmin\launcher\version.txt" del "%appdata%\kotsasmin\lau
 curl.exe -o "%appdata%\kotsasmin\launcher\version.txt" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/version.txt" -L -s
 set /p new_version=<"%appdata%\kotsasmin\launcher\version.txt"
 if %VERSION%==%new_version% goto:EOF
-curl.exe -o "Launcher %new_version%.bat" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/Launcher.bat" -L -s
-start "" "Launcher %new_version%.bat"
+curl.exe -o "Minecraft Launcher %new_version%.bat" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/Launcher.bat" -L -s
+start "" "Minecraft Launcher %new_version%.bat"
 REM (goto) 2>nul & del "%~f0"
 SET mypath=%~dp0
 cd %mypath:~0,-1%
 del "%~nx0%"
+
+:CHECK_UPDATE
+Ping www.google.nl -n 1 -w 1000 >nul
+if errorlevel 1 (set in=0) else (set in=1)
+if %in%==0 set "UPDATE_STATUS=Please check your internet connection..." & goto:EOF
+if exist "%appdata%\kotsasmin\launcher\version.txt" del "%appdata%\kotsasmin\launcher\version.txt"
+curl.exe -o "%appdata%\kotsasmin\launcher\version.txt" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/version.txt" -L -s
+set /p new_version=<"%appdata%\kotsasmin\launcher\version.txt"
+if %VERSION%==%new_version% SET UPDATE_STATUS=Updated (%VERSION%) & GOTO:EOF
+SET UPDATE_STATUS=Outdated (%new_version%) & GOTO:EOF
+
+
+:ACCOUNT_ERROR
+cls
+echo  SOMETHING WENT WRONG IN CREATING YOUR ACCOUNT: %name%
+echo.
+echo.
+echo.
+ECHO.
+echo  Try to update the Launcher or move the directory of the launcher...
+ECHO.
+ECHO.
+ECHO.
+ECHO.
+ECHO.
+ECHO.
+ECHO !Return!
+PAUSE>NUL|SET /P =
+goto CHOOSER
