@@ -1,6 +1,12 @@
 @ECHO OFF
 color f
 
+call:install
+
+set c1=%~1
+
+if "%c1%" == "-update" (goto START_UPDATING)
+
 ENDLOCAL
 
 SET "AUTH_DP0=%~dp0"
@@ -52,8 +58,7 @@ REM SET LF=^
 set VERSION=1.4
 title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
-call:install
-::call:update
+
 
 timeout 0 /nobreak >nul
 
@@ -339,8 +344,8 @@ echo.
 ECHO       Auth server State: %BLOCK_STATE%!MSG!
 ECHO       Official accounts: !LEGITIMATE_ACCOUNTS!
 echo.
-echo             Launcher version: %VERSION%
-ECHO                Update status: %UPDATE_STATUS%
+echo        Launcher version: %VERSION%
+ECHO           Update status: %UPDATE_STATUS%
 echo.
 echo.
 echo.
@@ -1192,19 +1197,24 @@ del %SCRIPT%
 goto:EOF
 
 :update
-Ping www.google.nl -n 1 -w 1000 >nul
-if errorlevel 1 (set in=0) else (set in=1)
-if %in%==0 goto:EOF
+call:CHECK_UPDATE
+SET mypath=%~dp0
+cd %mypath:~0,-1%
+"%~f0" -update
+exit
+
+
+:START_UPDATING
 if exist "%appdata%\kotsasmin\launcher\version.txt" del "%appdata%\kotsasmin\launcher\version.txt"
 curl.exe -o "%appdata%\kotsasmin\launcher\version.txt" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/version.txt" -L -s
 set /p new_version=<"%appdata%\kotsasmin\launcher\version.txt"
-if %VERSION%==%new_version% goto:EOF
-curl.exe -o "Minecraft Launcher %new_version%.bat" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/Launcher.bat" -L -s
+curl.exe -o "Minecraft Launcher %new_version%.bat" "https://raw.githubusercontent.com/Kotsasmin/Minecraft_Offline_Launcher/main/Minecraft_Launcher.bat" -L -s
 start "" "Minecraft Launcher %new_version%.bat"
 REM (goto) 2>nul & del "%~f0"
-SET mypath=%~dp0
-cd %mypath:~0,-1%
+::SET mypath=%~dp0
+::cd %mypath:~0,-1%
 del "%~nx0%"
+EXIT
 
 :CHECK_UPDATE
 Ping www.google.nl -n 1 -w 1000 >nul
