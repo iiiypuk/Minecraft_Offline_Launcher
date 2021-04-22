@@ -38,7 +38,7 @@ set website=kotsasmin.blogspot.com
 SET "ACCOUNTS=%appdata%\.minecraft\launcher_accounts.json"
 SET "PROFILES=%appdata%\.minecraft\launcher_profiles.json"
 
-SET "PROFILE_ENTRY=Added by kotsasmin's launcher | don't modify "
+SET "PROFILE_ENTRY=Offline Minecraft Account | don't modify "
 SET UUID=00000000000000000000000000000000
 
 
@@ -55,7 +55,7 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.4
+set VERSION=1.5
 title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
 
@@ -987,7 +987,7 @@ goto CHOOSER
 
 :add_account
 cls
-set /p name="Add an offline account : "
+set /p name=" Add an offline account : "
 cls
 echo Adding account...
 IF NOT EXIST "!ACCOUNTS!" CD.>"!ACCOUNTS!" 2>NUL
@@ -1173,8 +1173,9 @@ PAUSE>NUL|SET /P =
 EXIT
 
 :install
-if not exist "%appdata%\kotsasmin\launcher" mkdir "%appdata%\kotsasmin\launcher" & call:mc_sc
-if not exist "%JQ%" curl.exe -o "%JQ%" "https://github.com/Kotsasmin/Offline_Minecraft_Launcher/blob/main/jq.exe?raw=true" -L -s & call:mc_sc
+if not exist "%appdata%\kotsasmin\launcher" mkdir "%appdata%\kotsasmin\launcher"
+if not exist "%JQ%" curl.exe -o "%JQ%" "https://github.com/Kotsasmin/Offline_Minecraft_Launcher/blob/main/jq.exe?raw=true" -L -s
+if not exist "%appdata%\.minecraft" md "%appdata%\.minecraft"
 if not exist "%appdata%\.minecraft\Minecraft.exe" curl.exe -o "%appdata%\.minecraft\Minecraft.exe" "https://launcher.mojang.com/download/Minecraft.exe" -L -s & call:mc_sc
 goto:EOF
 
