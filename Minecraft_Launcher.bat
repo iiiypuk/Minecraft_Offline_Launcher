@@ -55,7 +55,7 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.5
+set VERSION=1.6
 title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
 
