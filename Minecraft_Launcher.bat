@@ -5,7 +5,7 @@ call:install
 
 set c1=%~1
 
-if "%c1%" == "-update" (goto START_UPDATING)
+if "%c1%" == "-update" (GOTO START_UPDATING)
 
 ENDLOCAL
 
@@ -55,7 +55,7 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.6
+set VERSION=1.7
 title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
 
@@ -517,7 +517,8 @@ goto :EOF
 ATTRIB -R -S -H "HOSTS.%BLOCK_STATE%">NUL 2>&1
 
 ECHO ####################################>>"HOSTS.%BLOCK_STATE%" 2>NUL
-ECHO ##  KOTSASMIN'S AUTH (UN)BLOCKER  ##>>"HOSTS.%BLOCK_STATE%" 2>NUL
+ECHO ## KOTSASMIN'S MINECRAFT LAUNCHER ##>>"HOSTS.%BLOCK_STATE%" 2>NUL
+ECHO ## https://discord.gg/KHvjMcKkEX  ##>>"HOSTS.%BLOCK_STATE%" 2>NUL
 ECHO ####################################>>"HOSTS.%BLOCK_STATE%" 2>NUL
 ECHO !HASH!0.0.0.0 !AUTH_SERVER!     !HASH!>>"HOSTS.%BLOCK_STATE%" 2>NUL
 ECHO ####################################>>"HOSTS.%BLOCK_STATE%" 2>NUL
@@ -845,19 +846,19 @@ echo.
 
 IF EXIST HOSTS (
 
-  ECHO  One or more problems with the HOSTS and/or block state files were detected
-  ECHO  Auth (un^)blocker will backup current HOSTS and try to resolve the problems
+  ECHO  One or more problems with the HOSTS and/or block state files were detected^^!
+  ECHO  Auth (un^)blocker will backup current HOSTS and try to resolve the problems....
   echo.
 
 ) ELSE (
 
   echo.
   echo.
-  ECHO  One or more important files appear to be missing. They will be regenerated
+  ECHO  One or more important files appear to be missing^^! They will be regenerated.
 
 )
 
-ECHO  Depending on the settings User Account Control may ask for your permission
+ECHO  Depending on the settings User Account Control may ask for your permission^^!
 echo.
 echo.
 echo.
@@ -880,7 +881,7 @@ echo.
 echo.
 echo.
 echo.
-ECHO  Missing or invalid HOSTS entries/block states were repaired. A backup was made
+ECHO  Missing or invalid HOSTS entries/block states were repaired^^! A backup was made...
 echo.
 echo.
 echo.
@@ -939,7 +940,7 @@ ECHO        WELCOME TO MINECRAFT LAUNCHER BY KOTSASMIN
 echo.
 echo.
 echo.
-ECHO  [1] = View HOSTS, Launcher and User Information
+ECHO  [1] View HOSTS, Launcher and User Information
 echo.
 SET "TEXT=[2]"
 IF "!HOSTS_STATE!"=="GOOD" (
@@ -948,22 +949,22 @@ IF "!HOSTS_STATE!"=="GOOD" (
 
   IF /I NOT "%BLOCK_STATE%"=="BLOCK" SET BLOCK_STATE_PREFIX=B
 
-  ECHO  !TEXT! = !BLOCK_STATE_PREFIX!lock the Minecraft Auth server
+  ECHO  !TEXT! !BLOCK_STATE_PREFIX!lock the Minecraft Auth server
 
 ) ELSE (
 
-  ECHO  !TEXT! = Repair HOSTS file related problems
+  ECHO  !TEXT! Repair HOSTS file related problems
 
 )
 CALL :REGFIX_CHECK
 echo.
-echo  [3] = Add an offline Minecraft account
+echo  [3] Add an offline Minecraft account
 echo.
-echo  [4] = Launch Minecraft Launcher
+echo  [4] Launch Minecraft Launcher
 echo.
-echo  [5] = Update
+echo  [5] Update
 echo.
-ECHO  [6] = Exit
+ECHO  [6] Exit
 echo.
 IF DEFINED FIX echo.
 echo.
@@ -1162,7 +1163,7 @@ echo.
 echo.
 echo.
 echo.
-ECHO  If the problem persists, visit my website for info or message me on Discord
+ECHO  If the problem persists, message me on Discord^^!
 echo.
 echo.
 echo.
