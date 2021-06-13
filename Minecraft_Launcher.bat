@@ -2,6 +2,7 @@
 color f
 
 call:install
+call:CHECK_UPDATE
 
 set c1=%~1
 
@@ -55,7 +56,7 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.7
+set VERSION=1.8
 title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
 
@@ -962,8 +963,7 @@ echo  [3] Add an offline Minecraft account
 echo.
 echo  [4] Launch Minecraft Launcher
 echo.
-echo  [5] Update
-echo.
+if %UPDATE_STATUS%==Updated echo  [5] Update & echo.
 ECHO  [6] Exit
 echo.
 IF DEFINED FIX echo.
