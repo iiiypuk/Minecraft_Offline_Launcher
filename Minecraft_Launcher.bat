@@ -2,7 +2,7 @@
 color f
 
 call:install
-call:CHECK_UPDATE
+
 
 set c1=%~1
 
@@ -963,8 +963,9 @@ echo  [3] Add an offline Minecraft account
 echo.
 echo  [4] Launch Minecraft Launcher
 echo.
-if %UPDATE_STATUS%==Updated (echo  [5] Update & echo. & set ex=6) else (set ex=5)
-ECHO  [%ex%] Exit
+echo  [5] Update 
+echo.
+ECHO  [6] Exit
 echo.
 IF DEFINED FIX echo.
 echo.
@@ -982,7 +983,7 @@ IF "!OPTION!"=="2" (
 IF "!OPTION!"=="3" goto add_account
 IF "!OPTION!"=="4" goto mc_launch
 IF "!OPTION!"=="5" goto update
-IF "!OPTION!"=="%ex%" EXIT
+IF "!OPTION!"=="6" EXIT
 
 goto CHOOSER
 
@@ -1202,6 +1203,7 @@ goto:EOF
 call:CHECK_UPDATE
 SET mypath=%~dp0
 cd %mypath:~0,-1%
+if %VERSION%==%new_version% goto CHOOSER
 "%~f0" -update
 exit
 
