@@ -56,7 +56,7 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.8
+set VERSION=1.9
 title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
 
@@ -143,7 +143,7 @@ IF /I "%BLOCK_STATE%"=="BLOCK" (
   ECHO   (online play *only* possible on unofficial servers^)
   echo.
   echo.
-  ECHO   Run this script again to play using an OFFICIAL account
+  ECHO   Unlock the authenticator server to play using an OFFICIAL account
   echo.
 
 ) ELSE (
@@ -154,7 +154,7 @@ IF /I "%BLOCK_STATE%"=="BLOCK" (
     ECHO   (online play on official servers *only* possible when purchasing game^)
     echo.
     echo.
-    ECHO   Run this script again to play as a "CRACKED" user
+    ECHO    Block the authenticator server to play as a "CRACKED" user
     echo.
 
   )
@@ -518,10 +518,12 @@ goto :EOF
 ATTRIB -R -S -H "HOSTS.%BLOCK_STATE%">NUL 2>&1
 
 ECHO ####################################>>"HOSTS.%BLOCK_STATE%" 2>NUL
+ECHO ####################################>>"HOSTS.%BLOCK_STATE%" 2>NUL
 ECHO ## KOTSASMIN'S MINECRAFT LAUNCHER ##>>"HOSTS.%BLOCK_STATE%" 2>NUL
 ECHO ## https://discord.gg/KHvjMcKkEX  ##>>"HOSTS.%BLOCK_STATE%" 2>NUL
 ECHO ####################################>>"HOSTS.%BLOCK_STATE%" 2>NUL
 ECHO !HASH!0.0.0.0 !AUTH_SERVER!     !HASH!>>"HOSTS.%BLOCK_STATE%" 2>NUL
+ECHO ####################################>>"HOSTS.%BLOCK_STATE%" 2>NUL
 ECHO ####################################>>"HOSTS.%BLOCK_STATE%" 2>NUL
 
 ATTRIB +R +S +H "HOSTS.%BLOCK_STATE%">NUL 2>&1
