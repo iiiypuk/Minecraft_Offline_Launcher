@@ -56,7 +56,7 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.9
+set VERSION=1.9.1
 title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
 
@@ -1235,12 +1235,12 @@ SET UPDATE_STATUS=Outdated (%new_version%) & GOTO:EOF
 
 :ACCOUNT_ERROR
 cls
-echo  SOMETHING WENT WRONG IN CREATING YOUR ACCOUNT: %name%
+echo  SOMETHING WENT WRONG CREATING YOUR ACCOUNT: %name%
 echo.
 echo.
 echo.
 ECHO.
-echo  Try to update the Launcher or move the directory of the launcher...
+echo  Try updating the Launcher or move the directory of the launcher somewere else...
 ECHO.
 ECHO.
 ECHO.
