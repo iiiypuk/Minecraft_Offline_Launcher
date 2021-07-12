@@ -1,7 +1,6 @@
 @ECHO OFF
 color f
 
-call:install
 
 
 set c1=%~1
@@ -56,10 +55,10 @@ SET "BLOCKER_ENTRIES=!LIBS_SERVER! !MODS_SERVER!"
 
 REM SET LF=^
 
-set VERSION=1.9.1
+set VERSION=1.9.5
 title Minecraft Launcher by Kotsasmin ^| %version% ^|
 
-
+call:install
 
 timeout 0 /nobreak >nul
 
@@ -1178,7 +1177,7 @@ EXIT
 
 :install
 if not exist "%appdata%\kotsasmin\launcher" mkdir "%appdata%\kotsasmin\launcher"
-if not exist "%JQ%" curl.exe -o "%JQ%" "https://github.com/Kotsasmin/Offline_Minecraft_Launcher/blob/main/jq.exe?raw=true" -L -s
+if not exist "%JQ%" curl.exe -o "%JQ%" -L "https://github.com/Kotsasmin/Minecraft_Offline_Launcher/blob/main/jq.exe?raw=true" -s
 if not exist "%appdata%\.minecraft" md "%appdata%\.minecraft"
 if not exist "%appdata%\.minecraft\Minecraft.exe" curl.exe -o "%appdata%\.minecraft\Minecraft.exe" "https://launcher.mojang.com/download/Minecraft.exe" -L -s & call:mc_sc
 goto:EOF
